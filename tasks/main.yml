@@ -10,7 +10,7 @@
 
 - name: Ensure minio home directory is created
   file:
-    path: "{{ minio_home }}"
+    path: '{{ minio_home }}'
     state: directory
     mode: 0750
     owner: '{{ minio_user }}'
