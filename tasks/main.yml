@@ -4,7 +4,6 @@
   - name: Create minio user
     user:
       name: '{{ minio_user }}'
-#      group: "{{ minio_group }}"
       home: '{{ minio_home }}'
       shell: /sbin/nologin
     become: True
@@ -41,8 +40,6 @@
       url: "{{ minio_package_source }}"
       dest: "{{ minio_home }}/bin/minio"
       mode: +x
-#      owner: '{{ minio_user }}:'
-#      group: "{{ minio_group }}"
     become: True
 
   - name: Copy minio config
@@ -53,11 +50,6 @@
       mode: 0644
       owner: '{{ minio_user }}'
     become: True
-#    register: minio_files_conf
-#    with_items:
-#      - config.json
-#    notify:
-#      - Restart minio
 
   - name: Copy minio service
     template:
