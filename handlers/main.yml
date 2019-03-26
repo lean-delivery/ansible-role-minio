@@ -19,7 +19,7 @@
 
 - name: Wait for Minio
   uri:
-    url: "http://{{ ansible_fqdn }}:{{ minio_http_port }}/minio/login"
+    url: "http://{{ minio_hostname }}:{{ minio_http_port }}/minio/login"
     status_code: 403
   register: login_page
   until: login_page.status == 403
