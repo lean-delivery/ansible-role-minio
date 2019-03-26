@@ -2,7 +2,7 @@ minio role
 =========
 [![License](https://img.shields.io/badge/license-Apache-green.svg?style=flat)](https://raw.githubusercontent.com/lean-delivery/ansible-role-minio/master/LICENSE)
 [![Build Status](https://travis-ci.org/lean-delivery/ansible-role-minio.svg?branch=master)](https://travis-ci.org/lean-delivery/ansible-role-minio)
-[![Build Status](https://gitlab.com/lean-delivery/ansible-role-minio/badges/master/build.svg)](https://gitlab.com/lean-delivery/ansible-role-minio)
+[![Build Status](https://gitlab.com/lean-delivery/ansible-role-minio/badges/master/build.svg)](https://gitlab.com/lean-delivery/ansible-role-minio/pipelines)
 [![Galaxy](https://img.shields.io/badge/galaxy-lean__delivery.minio-blue.svg)](https://galaxy.ansible.com/lean_delivery/minio)
 ![Ansible](https://img.shields.io/ansible/role/d/role_id.svg)
 ![Ansible](https://img.shields.io/badge/dynamic/json.svg?label=min_ansible_version&url=https%3A%2F%2Fgalaxy.ansible.com%2Fapi%2Fv1%2Froles%2Frole_id%2F&query=$.min_ansible_version)
