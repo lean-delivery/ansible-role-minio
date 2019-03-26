@@ -53,6 +53,7 @@ AWS minio:
 EPC minio:
   variables:
     EPC_REGION: EPAM-BY2
+  env:
     ANSIBLE_LIBRARY: ${ANSIBLE_LIBRARY}
   stage: deployment test
   script:
