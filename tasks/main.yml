@@ -49,7 +49,7 @@
     template:
       src: "minio.conf.j2"
       dest: '{{ minio_home }}/minio.conf'
-      backup: yes
+      backup: True
       mode: 0644
       owner: '{{ minio_user }}'
     become: True
@@ -63,7 +63,7 @@
     template:
       src: "minio.service.j2"
       dest: /etc/systemd/system/minio.service
-      backup: yes
+      backup: True
       mode: 0644
     become: True
     notify:
@@ -74,7 +74,7 @@
     template:
       src: "config.json.j2"
       dest: '{{ minio_home }}/data/.minio.sys/config/config.json'
-      backup: yes
+      backup: True
       mode: 0644
       owner: '{{ minio_user }}'
     become: True
