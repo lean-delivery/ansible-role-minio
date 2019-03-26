@@ -50,7 +50,7 @@ AWS minio:
 #   tags:
 #     - aws
 
-EPC minio:
+.EPC minio:
   variables:
     EPC_REGION: EPAM-BY2
   stage: deployment test
