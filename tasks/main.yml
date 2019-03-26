@@ -28,7 +28,7 @@
 
 - name: Ensure minio data directory is created in {{ minio_home }}
   file:
-    path: "{{ minio_home }}/data"
+    path: '{{ minio_home }}/data'
     state: directory
     mode: 0750
     owner: '{{ minio_user }}'
