@@ -43,7 +43,7 @@ Role Variables
 Example Playbook
 ----------------
 
----
+```yml
 - name: Install Minio storage server
   hosts: minio
   roles:
@@ -51,7 +51,7 @@ Example Playbook
   vars:
     minio_access_key: EH3FJ946FA17VFAPAQVB
     minio_secret_key: WiiS0bcJf+jxqgPJkDJT2tGvFbpyCS9E+FipKwO7
-
+```
 
 License
 -------
