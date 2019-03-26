@@ -23,7 +23,7 @@
     state: directory
     mode: 0750
     owner: '{{ minio_user }}'
-    group: "{{ minio_group }}"
+    group: '{{ minio_group }}'
   become: True
 
 - name: Ensure minio data directory is created in {{ minio_home }}
