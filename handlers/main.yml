@@ -1,0 +1,27 @@
+---
+# handlers file for aem-minio
+
+- name: Start Minio
+  service:
+    name: minio
+    state: started
+    enabled: True
+  notify: Wait for Minio
+  become: True
+
+- name: Restart Minio
+  service:
+    name: minio
+    state: restarted
+    enabled: True
+  notify: Wait for Minio
+  become: True
+
+- name: Wait for Minio
+  uri:
+    url: "http://localhost:{{ minio_http_port }}/minio/login"
+    status_code: 403
+  register: login_page
+  until: login_page.status == 403
+  retries: 60
+  delay: 1

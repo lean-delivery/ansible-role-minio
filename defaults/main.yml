@@ -1,0 +1,10 @@
+---
+# defaults file for aem-minio
+minio_home: /opt/minio
+minio_user: minio
+minio_group: minio
+minio_package_source: https://dl.minio.io/server/minio/release/linux-amd64/minio
+data_path: '{{ minio_home }}/data'
+minio_http_port: 9000
+minio_access_key: EH3FJ946FA17VFAPAQVB
+minio_secret_key: WiiS0bcJf+jxqgPJkDJT2tGvFbpyCS9E+FipKwO7
