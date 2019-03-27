@@ -44,7 +44,7 @@
 
 - name: Copy minio config
   template:
-    src: 'minio.conf.j2'
+    src: minio.conf.j2
     dest: '{{ minio_home }}/minio.conf'
     backup: True
     mode: 0644
@@ -58,10 +58,13 @@
     backup: True
     mode: 0644
   become: True
-  notify:
-    - Start Minio
 
-- meta: flush_handlers
+- name: Start Minio
+  service:
+    name: minio
+    state: started
+    enabled: True
+  become: True
 
 - name: Copy minio config.json
   template:
