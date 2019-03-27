@@ -32,7 +32,7 @@ Role Variables
      default: `minio`
   - `minio_package_source` - Source from which should be downloded binary file   
      default: `https://dl.minio.io/server/minio/release/linux-amd64/minio`
-  - `data_path` - Minio data folder   
+  - `minino_data_path` - Minio data folder   
      default: `'{{ minio_home }}/data'`
   - `minio_http_port` - Port for listening connections   
      default: `9000`

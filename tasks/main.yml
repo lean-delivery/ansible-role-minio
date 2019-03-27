@@ -1,78 +1,64 @@
 ---
 # tasks file for aem-minio
 
-- name: Create minio user
-  user:
-    name: '{{ minio_user }}'
-    home: '{{ minio_home }}'
-    shell: /sbin/nologin
-  become: True
+- block:
+  - name: Create minio user
+    user:
+      name: '{{ minio_user }}'
+      home: '{{ minio_home }}'
+      shell: /sbin/nologin
 
-- name: Ensure minio home directory is created
-  file:
-    path: '{{ minio_home }}'
-    state: directory
-    mode: 0750
-    owner: '{{ minio_user }}'
-    group: '{{ minio_group }}'
-  become: True
+  - name: Ensure that minio directories are created
+    file:
+      path: '{{ dir }}'
+      state: directory
+      mode: 0750
+      owner: '{{ minio_user }}'
+      group: '{{ minio_group }}'
+    loop:
+      - '{{ minio_home }}'
+      - '{{ minio_home }}/bin'
+      - '{{ minio_data_path }}'
+    loop_control:
+      loop_var: dir
 
-- name: Ensure minio bin directory is created in {{ minio_home }}
-  file:
-    path: '{{ minio_home }}/bin'
-    state: directory
-    mode: 0750
-    owner: '{{ minio_user }}'
-    group: '{{ minio_group }}'
-  become: True
+  - name: Copy minio binary file
+    get_url:
+      url: '{{ minio_package_source }}'
+      dest: '{{ minio_home }}/bin/minio'
+      mode: +x
 
-- name: Ensure minio data directory is created in {{ minio_home }}
-  file:
-    path: '{{ minio_data_path }}'
-    state: directory
-    mode: 0750
-    owner: '{{ minio_user }}'
-    group: '{{ minio_group }}'
-  become: True
+  - name: Copy minio templates
+    template:
+      src: '{{ conf_item.src }}'
+      dest: '{{ conf_item.dest }}'
+      backup: True
+      mode: 0644
+      owner: '{{ conf_item.user }}'
+    loop:
+      - src: minio.conf.j2
+        dest: '{{ minio_home }}/minio.conf'
+        user: '{{ minio_user}}'
+      - src: minio.service.j2
+        dest: /etc/systemd/system/minio.service
+        user: root
+    loop_control:
+      loop_var: conf_item
 
-- name: Copy minio binary file
-  get_url:
-    url: '{{ minio_package_source }}'
-    dest: '{{ minio_home }}/bin/minio'
-    mode: +x
-  become: True
+  - name: Start Minio
+    service:
+      name: minio
+      state: started
+      enabled: True
 
-- name: Copy minio config
-  template:
-    src: minio.conf.j2
-    dest: '{{ minio_home }}/minio.conf'
-    backup: True
-    mode: 0644
-    owner: '{{ minio_user }}'
-  become: True
-
-- name: Copy minio service
-  template:
-    src: minio.service.j2
-    dest: /etc/systemd/system/minio.service
-    backup: True
-    mode: 0644
-  become: True
-
-- name: Start Minio
-  service:
-    name: minio
-    state: started
-    enabled: True
-  become: True
-
-- name: Copy minio config.json
-  template:
-    src: config.json.j2
-    dest: '{{ minio_home }}/data/.minio.sys/config/config.json'
-    backup: True
-    mode: 0644
-    owner: '{{ minio_user }}'
-  become: True
-  notify:
+  - name: Copy minio config.json
+    template:
+      src: config.json.j2
+      dest: '{{ minio_home }}/data/.minio.sys/config/config.json'
+      backup: True
+      mode: 0644
+      owner: '{{ minio_user }}'
+    notify:
     - Restart Minio
+
+  become: True
