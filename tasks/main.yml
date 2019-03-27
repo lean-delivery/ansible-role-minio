@@ -30,16 +30,16 @@
 
   - name: Copy minio templates
     template:
-      src: '{{ conf_item.src }}'
+      src: '{{ conf_item.src }}.j2'
       dest: '{{ conf_item.dest }}'
       backup: True
       mode: 0644
       owner: '{{ conf_item.user }}'
     loop:
-      - src: minio.conf.j2
+      - src: minio.conf
         dest: '{{ minio_home }}/minio.conf'
-        user: '{{ minio_user}}'
-      - src: minio.service.j2
+        user: '{{ minio_user }}'
+      - src: minio.service
         dest: /etc/systemd/system/minio.service
         user: root
     loop_control:
