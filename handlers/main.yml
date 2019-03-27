@@ -6,14 +6,4 @@
     name: minio
     state: restarted
     enabled: True
-  notify: Wait for Minio
   become: True
-
-- name: Wait for Minio
-  uri:
-    url: "http://{{ minio_hostname }}:{{ minio_http_port }}/minio/login"
-    status_code: 403
-  register: login_page
-  until: login_page.status == 403
-  retries: 60
-  delay: 1

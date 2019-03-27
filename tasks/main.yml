@@ -76,5 +76,3 @@
   become: True
   notify:
     - Restart Minio
-
-- meta: flush_handlers
