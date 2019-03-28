@@ -8,8 +8,8 @@ minio role
 ![Ansible](https://img.shields.io/badge/dynamic/json.svg?label=min_ansible_version&url=https%3A%2F%2Fgalaxy.ansible.com%2Fapi%2Fv1%2Froles%2F39136%2F&query=$.min_ansible_version)
 
 This role:
-  - installs Minio server on Ununtu, Centos7, RHEL7
-  - enables miniio service to systemd
+  - installs Minio server on Ubuntu, Centos7, RHEL7
+  - enables minio service to systemd
 
 Requirements
 ------------
