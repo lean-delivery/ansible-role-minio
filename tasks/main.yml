@@ -10,7 +10,7 @@
 
   - name: Ensure that minio directories are created
     file:
-      path: '{{ dir }}'
+      path: '{{ minio_dir }}'
       state: directory
       mode: 0750
       owner: '{{ minio_user }}'
@@ -20,13 +20,17 @@
       - '{{ minio_home }}/bin'
       - '{{ minio_data_path }}'
     loop_control:
-      loop_var: dir
+      loop_var: minio_dir
 
   - name: Copy minio binary file
     get_url:
       url: '{{ minio_package_source }}'
       dest: '{{ minio_home }}/bin/minio'
       mode: +x
+    register: file_downloaded
+    retries: 15
+    delay: 5
+    until: "'OK' in file_downloaded.msg"
 
   - name: Copy minio templates
     template:
