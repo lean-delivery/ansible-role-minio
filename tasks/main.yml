@@ -22,11 +22,6 @@
     loop_control:
       loop_var: minio_dir
 
-  - name: check if binary file already exists
-    stat:
-      path: '{{ minio_home }}/bin/minio'
-    register: bin_file
-
   - name: Copy minio binary file
     get_url:
       url: '{{ minio_package_source }}'
@@ -37,8 +32,7 @@
     register: file_downloaded
     retries: 15
     delay: 5
-    until: "'OK' in file_downloaded.msg"
-    when: not bin_file.stat.exists
+    until: file_downloaded is succeeded
 
   - name: Copy minio templates
     template:
