@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  roles:
+    - role: ansible-role-minio
+  vars:
+    minio_hostname: '{{ ansible_host }}'
