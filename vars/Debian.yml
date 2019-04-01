@@ -1,0 +1,4 @@
+---
+requirements:
+  - openssl
+  - python-pip

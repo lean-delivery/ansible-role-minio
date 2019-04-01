@@ -1,0 +1,82 @@
+---
+- name: Check if local key exists
+  stat:
+    path: '{{ minio_local_key_path }}'
+  delegate_to: '{{ minio_local_certs | ternary("localhost", inventory_hostname) }}'
+  register: key_file
+  when: minio_local_certs
+
+- name: Check if local cert exists
+  stat:
+    path: '{{ minio_local_cert_path }}'
+  delegate_to: '{{ minio_local_certs | ternary("localhost", inventory_hostname) }}'
+  register: cert_file
+  when: minio_local_certs
+
+- name: Copy key file
+  copy:
+    src: '{{ minio_local_key_path }}'
+    dest: '{{ minio_key_path }}'
+    owner: root
+    group: root
+    mode: 0644
+    remote_src: '{{ not minio_local_certs }}'
+  become: True
+  when: key_file.stat.exists
+
+- name: Copy cert file
+  copy:
+    src: '{{ mino_local_cert_path }}'
+    dest: '{{ minio_cert_path }}'
+    owner: root
+    group: root
+    mode: 0644
+    remote_src: '{{ not minio_local_certs }}'
+  become: True
+  when: cert_file.stat.exists
+
+- name: Check if key exists
+  stat:
+    path: '{{ minio_key_path }}/{{ minio_ssl_key_file_name }}'
+  register: key_file
+  become: True
+
+- name: Check if cert exists
+  stat:
+    path: '{{ minio_cert_path }}/{{ minio_ssl_cert_file_name }}'
+  register: cert_file
+  become: True
+
+- block:
+    - name: Install pip packages
+      pip:
+        name:
+          - pyOpenSSL
+        state: present
+        extra_args: --upgrade
+      register: package_install
+      until: package_install is succeeded
+
+    - name: Create private certificate
+      openssl_privatekey:
+        path: '{{ minio_key_path }}/{{ minio_ssl_key_file_name }}'
+        size: '{{ minio_ssl_key_size | int }}'
+
+    - name: Create CSR
+      openssl_csr:
+        path: '/tmp/{{ minio_ssl_cert_file_name }}.csr'
+        privatekey_path: '{{ minio_key_path }}/{{ minio_ssl_key_file_name }}'
+        common_name: '{{ minio_ca_domain }}'
+
+    - name: Create certificates for keystore
+      openssl_certificate:
+        csr_path: '/tmp/{{ minio_ssl_cert_file_name }}.csr'
+        path: '{{ minio_cert_path }}/{{ minio_ssl_cert_file_name }}'
+        privatekey_path: '{{ minio_key_path }}/{{ minio_ssl_key_file_name }}'
+        provider: '{{ minio_ssl_certificate_provider }}'
+        force: True
+
+  when:
+    - not key_file.stat.exists
+    - not cert_file.stat.exists
+  become: True

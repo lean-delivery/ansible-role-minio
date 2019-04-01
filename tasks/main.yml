@@ -1,5 +1,5 @@
 ---
-# tasks file for aem-minio
+# tasks file for minio
 
 - block:
   - name: Create minio user
@@ -57,6 +57,10 @@
       state: started
       enabled: True
 
+  - name: Wait until the configuration file appears
+    wait_for:
+      path: '{{ minio_home }}/data/.minio.sys/config/config.json'
+
   - name: Copy minio config.json
     template:
       src: config.json.j2
@@ -68,3 +72,30 @@
     - Restart Minio
 
   become: True
+
+- block:
+
+  - name: Enable EPEL repository
+    yum:
+      name: 'https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm'
+      state: present
+    register: package_install
+    until: package_install is succeeded
+    when: ansible_os_family == 'RedHat'
+
+  - name: Load variables for OS family
+    include_vars: '{{ ansible_os_family }}.yml'
+
+  - name: Install requirements
+    package:
+      name: '{{ requirements }}'
+      state: present
+    register: package_install
+    until: package_install is succeeded
+    become: True
+
+  - name: SSL preparation
+    include_tasks: 'ssl/{{ ansible_system }}.yml'
+
+  when:
+    - minio_enable_ssl
