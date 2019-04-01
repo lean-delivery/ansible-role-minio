@@ -12,8 +12,8 @@ minio_secret_key: WiiS0bcJf+jxqgPJkDJT2tGvFbpyCS9E+FipKwO7
 
 #SSL certificate
 minio_enable_ssl: True
-minio_ssl_key_file_name: '{{ minio_hostname }}.key.pem'
-minio_ssl_cert_file_name: '{{ minio_hostname }}.cert.pem'
+minio_ssl_key_file_name: private.key
+minio_ssl_cert_file_name: public.crt
 minio_local_certs: True
 minio_local_key_path: '{{ role_path }}/files/{{ minio_ssl_key_file_name }}'
 minio_local_cert_path: '{{ role_path }}/files/{{ minio_ssl_cert_file_name }}'

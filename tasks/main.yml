@@ -82,6 +82,7 @@
     register: package_install
     until: package_install is succeeded
     when: ansible_os_family == 'RedHat'
+    become: True
 
   - name: Load variables for OS family
     include_vars: '{{ ansible_os_family }}.yml'
