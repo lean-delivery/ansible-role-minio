@@ -22,7 +22,7 @@ minio_cert_path: '{{ minio_cert_default_path }}'
 minio_ca_domain: '{{ minio_hostname }}'
 # https://docs.ansible.com/ansible/latest/openssl_certificate_module.html
 minio_ssl_certificate_provider: selfsigned
-minio_ssl_key_size: 4096
+minio_ssl_key_size: 2048
 #minio_ssl_key_store: ~/*.key
 minio_key_default_path: '{{ minio_home }}/.minio/certs'
 minio_cert_default_path: '{{ minio_home }}/.minio/certs'

@@ -97,6 +97,8 @@
 
   - name: SSL preparation
     include_tasks: 'ssl/{{ ansible_system }}.yml'
+    notify:
+    - Restart Minio
 
   when:
     - minio_enable_ssl

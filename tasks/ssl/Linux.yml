@@ -61,12 +61,21 @@
       openssl_privatekey:
         path: '{{ minio_key_path }}/{{ minio_ssl_key_file_name }}'
         size: '{{ minio_ssl_key_size | int }}'
+        owner: '{{ minio_user }}'
 
     - name: Create CSR
       openssl_csr:
         path: '/tmp/{{ minio_ssl_cert_file_name }}.csr'
         privatekey_path: '{{ minio_key_path }}/{{ minio_ssl_key_file_name }}'
         common_name: '{{ minio_ca_domain }}'
+        subject:
+           C: US
+           ST: state
+           L: location
+           O: organization
+        owner: '{{ minio_user }}'
+
+
 
     - name: Create certificates for keystore
       openssl_certificate:
@@ -74,6 +83,7 @@
         path: '{{ minio_cert_path }}/{{ minio_ssl_cert_file_name }}'
         privatekey_path: '{{ minio_key_path }}/{{ minio_ssl_key_file_name }}'
         provider: '{{ minio_ssl_certificate_provider }}'
+        owner: '{{ minio_user }}'
         force: True
 
   when:
