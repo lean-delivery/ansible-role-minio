@@ -1,4 +1,4 @@
 ---
 requirements:
-  - openssl
+#  - openssl
   - python-pip

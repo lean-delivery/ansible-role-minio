@@ -1,6 +1,4 @@
 ---
 requirements:
-  - python-devel
-  - openssl-devel
   - python2-pip
-  - openssl
+#  - openssl

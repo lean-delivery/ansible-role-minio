@@ -60,6 +60,7 @@
   - name: Wait until the configuration file appears
     wait_for:
       path: '{{ minio_home }}/data/.minio.sys/config/config.json'
+      delay: 10
 
   - name: Copy minio config.json
     template:
@@ -97,8 +98,6 @@
 
   - name: SSL preparation
     include_tasks: 'ssl/{{ ansible_system }}.yml'
-    notify:
-    - Restart Minio
 
   when:
     - minio_enable_ssl
