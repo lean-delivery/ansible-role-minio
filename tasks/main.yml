@@ -60,7 +60,6 @@
   - name: Wait until the configuration file appears
     wait_for:
       path: '{{ minio_home }}/data/.minio.sys/config/config.json'
-      delay: 10
 
   - name: Copy minio config.json
     template:
@@ -74,30 +73,7 @@
 
   become: True
 
-- block:
-
-  - name: Enable EPEL repository
-    yum:
-      name: 'https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm'
-      state: present
-    register: package_install
-    until: package_install is succeeded
-    when: ansible_os_family == 'RedHat'
-    become: True
-
-  - name: Load variables for OS family
-    include_vars: '{{ ansible_os_family }}.yml'
-
-  - name: Install requirements
-    package:
-      name: '{{ requirements }}'
-      state: present
-    register: package_install
-    until: package_install is succeeded
-    become: True
-
-  - name: SSL preparation
-    include_tasks: 'ssl/{{ ansible_system }}.yml'
-
+- name: SSL preparation
+  include_tasks: 'ssl/{{ ansible_system }}.yml'
   when:
     - minio_enable_ssl

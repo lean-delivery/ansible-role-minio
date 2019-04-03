@@ -16,9 +16,9 @@
 - name: Copy key file
   copy:
     src: '{{ minio_local_key_path }}'
-    dest: '{{ minio_key_path }}'
-    owner: root
-    group: root
+    dest: '{{ minio_key_path }}/private.key'
+    owner: '{{ minio_user }}'
+    group: '{{ minio_user }}'
     mode: 0644
     remote_src: '{{ not minio_local_certs }}'
   become: True
@@ -26,18 +26,20 @@
 
 - name: Copy cert file
   copy:
-    src: '{{ mino_local_cert_path }}'
-    dest: '{{ minio_cert_path }}'
-    owner: root
-    group: root
+    src: '{{ minio_local_cert_path }}'
+    dest: '{{ minio_cert_path }}/public.crt'
+    owner: '{{ minio_user }}'
+    group: '{{ minio_user }}'
     mode: 0644
     remote_src: '{{ not minio_local_certs }}'
   become: True
   when: cert_file.stat.exists
+  notify:
+    - Restart Minio
 
 - name: Check if key exists
   stat:
-    path: '{{ minio_key_path }}/{{ minio_ssl_key_file_name }}'
+    path: '{{ minio_key_path }}/public.crt'
   register: key_file
   become: True
 
@@ -48,6 +50,25 @@
   become: True
 
 - block:
+    - name: Enable EPEL repository
+      yum:
+        name: 'https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm'
+        state: present
+      register: package_install
+      until: package_install is succeeded
+      when: ansible_os_family == 'RedHat'
+      become: True
+
+    - name: Load variables for OS family
+      include_vars: '{{ ansible_os_family }}.yml'
+
+    - name: Install requirements
+      package:
+        name: '{{ requirements }}'
+        state: present
+      register: package_install
+      until: package_install is succeeded
+      become: True
     - name: Install pip packages
       pip:
         name:
@@ -59,7 +80,7 @@
 
     - name: Create private certificate
       openssl_privatekey:
-        path: '{{ minio_key_path }}/{{ minio_ssl_key_file_name }}'
+        path: '{{ minio_key_path }}/private.key'
         size: '{{ minio_ssl_key_size | int }}'
         owner: '{{ minio_user }}'
         force: True
@@ -67,21 +88,16 @@
     - name: Create CSR
       openssl_csr:
         path: '/tmp/{{ minio_ssl_cert_file_name }}.csr'
-        privatekey_path: '{{ minio_key_path }}/{{ minio_ssl_key_file_name }}'
+        privatekey_path: '{{ minio_key_path }}/private.key'
         common_name: '{{ minio_ca_domain }}'
-#        subject:
-#           C: US
-#           ST: state
-#           L: location
-#           O: organization
         owner: '{{ minio_user }}'
         force: True
 
     - name: Create certificates for keystore
       openssl_certificate:
         csr_path: '/tmp/{{ minio_ssl_cert_file_name }}.csr'
-        path: '{{ minio_cert_path }}/{{ minio_ssl_cert_file_name }}'
-        privatekey_path: '{{ minio_key_path }}/{{ minio_ssl_key_file_name }}'
+        path: '{{ minio_cert_path }}/public.crt'
+        privatekey_path: '{{ minio_key_path }}/private.key'
         provider: '{{ minio_ssl_certificate_provider }}'
         owner: '{{ minio_user }}'
         force: True
