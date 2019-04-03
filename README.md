@@ -9,7 +9,7 @@ minio role
 
 This role:
   - installs Minio server on Ubuntu, Centos7, RHEL7
-  - enables minio service to systemd
+  - enables Minio service to systemd
 
 Requirements
 ------------
@@ -38,6 +38,34 @@ Role Variables
      default: `9000`
   - `minio_access_key` - Access key for log in   
   - `minio_secret_key` - Secret key for log in   
+   #SSL certificate settings
+   - `minio_enable_ssl` - Switching on secure connection   
+      default: `True`
+   - `minio_ssl_key_file_name` - Private key file name   
+       default: `private.key`
+   - `minio_ssl_cert_file_name` - Certificate file name   
+      default: `public.crt`
+   -  `minio_local_certs` - To find prepared certificate files on ansible host   
+       default: `True`
+   - `minio_local_key_path` - Prepared private key file path   
+      default: `'{{ role_path }}/files/{{ minio_ssl_key_file_name }}'`
+   - `minio_local_cert_path` - Prepared certificate file path   
+       default: `'{{ role_path }}/files/{{ minio_ssl_cert_file_name }}'`
+   - `minio_key_path` - Prepared private key file path   
+       default: `'{{ minio_key_default_path }}'`
+   - `minio_cert_path` - Prepared certificate file path   
+      default: `'{{ minio_cert_default_path }}'`
+   - `minio_ca_domain` - Certificate domain (to create certificate if not exists)   
+      default: `'{{ minio_hostname }}'`
+# https://docs.ansible.com/ansible/latest/openssl_certificate_module.html
+   - `minio_ssl_certificate_provider` - Certificater provider (to create certificate if not exists)   
+      default: `selfsigned`
+   - `minio_ssl_key_size` - Private key encryption size (to create certificate if not exists)   
+      default: `4096`
+   - `minio_key_default_path` - The path where key should be placed   
+      default: `'{{ minio_home }}/.minio/certs'`
+   - `minio_cert_default_path` - : The path where key should be placed'   
+      default: `{{ minio_home }}/.minio/certs'`
 
 
 Example Playbook
