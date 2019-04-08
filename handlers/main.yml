@@ -5,5 +5,17 @@
   service:
     name: minio
     state: restarted
-    enabled: True
+  notify: Wait for Minio
   become: True
+
+- name: Wait for Minio
+  uri:
+    url: "{{ minio_connection_type }}://localhost:{{ minio_http_port }}/minio/login"
+    status_code: 200
+    headers:
+      User-Agent: 'Mozilla/5.0'
+    validate_certs: False
+  register: login_page
+  until: login_page.status == 200
+  retries: 10
+  delay: 1

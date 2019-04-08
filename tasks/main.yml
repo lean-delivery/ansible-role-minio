@@ -1,6 +1,7 @@
 ---
 # tasks file for minio
 
+
 - block:
   - name: Create minio user
     user:
@@ -56,10 +57,16 @@
       name: minio
       state: started
       enabled: True
+    notify:
+    - Wait for Minio
 
-  - name: Wait until the configuration file appears
-    wait_for:
-      path: '{{ minio_home }}/data/.minio.sys/config/config.json'
+  - meta: flush_handlers
+
+#  - name: Wait until the configuration file appears
+#    wait_for:
+#      path: '{{ minio_home }}/data/.minio.sys/config/config.json'
+#    retries: 15
+#    delay: 1
 
   - name: Copy minio config.json
     template:
@@ -70,6 +77,8 @@
       owner: '{{ minio_user }}'
     notify:
     - Restart Minio
+
+  - meta: flush_handlers
 
   become: True
 

@@ -1,4 +1,8 @@
 ---
+- name: Switch to https
+  set_fact:
+    minio_connection_type: https
+
 - name: Check if local key exists
   stat:
     path: '{{ minio_local_key_path }}'
@@ -23,6 +27,8 @@
     remote_src: '{{ not minio_local_certs }}'
   become: True
   when: key_file.stat.exists
+  notify:
+    - Restart Minio
 
 - name: Copy cert file
   copy:
@@ -57,7 +63,6 @@
       register: package_install
       until: package_install is succeeded
       when: ansible_os_family == 'RedHat'
-      become: True
 
     - name: Load variables for OS family
       include_vars: '{{ ansible_os_family }}.yml'
@@ -68,7 +73,7 @@
         state: present
       register: package_install
       until: package_install is succeeded
-      become: True
+
     - name: Install pip packages
       pip:
         name:
