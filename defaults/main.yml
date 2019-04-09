@@ -14,14 +14,14 @@ minio_secret_key: WiiS0bcJf+jxqgPJkDJT2tGvFbpyCS9E+FipKwO7
 minio_enable_ssl: True
 minio_ssl_key_file_name: private.key
 minio_ssl_cert_file_name: public.crt
-minio_local_certs: True
+minio_local_certs: False
 minio_local_key_path: '{{ role_path }}/files/{{ minio_ssl_key_file_name }}'
 minio_local_cert_path: '{{ role_path }}/files/{{ minio_ssl_cert_file_name }}'
-minio_key_path: '{{ minio_key_default_path }}'
-minio_cert_path: '{{ minio_cert_default_path }}'
+minio_key_path: '{{ minio_home }}/.minio/certs'
+minio_cert_path: '{{ minio_home }}/.minio/certs'
 minio_ca_domain: '{{ minio_hostname }}'
 # https://docs.ansible.com/ansible/latest/openssl_certificate_module.html
 minio_ssl_certificate_provider: selfsigned
 minio_ssl_key_size: 4096
-minio_key_default_path: '{{ minio_home }}/.minio/certs'
-minio_cert_default_path: '{{ minio_home }}/.minio/certs'
+#minio_key_default_path: '{{ minio_home }}/.minio/certs'
+#minio_cert_default_path: '{{ minio_home }}/.minio/certs'

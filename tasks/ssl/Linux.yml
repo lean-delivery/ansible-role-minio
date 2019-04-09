@@ -3,20 +3,6 @@
   set_fact:
     minio_connection_type: https
 
-- name: Check if local key exists
-  stat:
-    path: '{{ minio_local_key_path }}'
-  delegate_to: '{{ minio_local_certs | ternary("localhost", inventory_hostname) }}'
-  register: key_file
-  when: minio_local_certs
-
-- name: Check if local cert exists
-  stat:
-    path: '{{ minio_local_cert_path }}'
-  delegate_to: '{{ minio_local_certs | ternary("localhost", inventory_hostname) }}'
-  register: cert_file
-  when: minio_local_certs
-
 - name: Copy key file
   copy:
     src: '{{ minio_local_key_path }}'
@@ -24,9 +10,8 @@
     owner: '{{ minio_user }}'
     group: '{{ minio_user }}'
     mode: 0644
-    remote_src: '{{ not minio_local_certs }}'
   become: True
-  when: key_file.stat.exists
+  when: minio_local_certs
   notify:
     - Restart Minio
 
@@ -37,79 +22,11 @@
     owner: '{{ minio_user }}'
     group: '{{ minio_user }}'
     mode: 0644
-    remote_src: '{{ not minio_local_certs }}'
   become: True
-  when: cert_file.stat.exists
+  when: minio_local_certs
   notify:
     - Restart Minio
 
-- name: Check if key exists
-  stat:
-    path: '{{ minio_key_path }}/public.crt'
-  register: key_file
-  become: True
-
-- name: Check if cert exists
-  stat:
-    path: '{{ minio_cert_path }}/{{ minio_ssl_cert_file_name }}'
-  register: cert_file
-  become: True
-
-- block:
-    - name: Enable EPEL repository
-      yum:
-        name: 'https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm'
-        state: present
-      register: package_install
-      until: package_install is succeeded
-      when: ansible_os_family == 'RedHat'
-
-    - name: Load variables for OS family
-      include_vars: '{{ ansible_os_family }}.yml'
-
-    - name: Install requirements
-      package:
-        name: '{{ requirements }}'
-        state: present
-      register: package_install
-      until: package_install is succeeded
-
-    - name: Install pip packages
-      pip:
-        name:
-          - pyOpenSSL
-        state: present
-        extra_args: --upgrade
-      register: package_install
-      until: package_install is succeeded
-
-    - name: Create private certificate
-      openssl_privatekey:
-        path: '{{ minio_key_path }}/private.key'
-        size: '{{ minio_ssl_key_size | int }}'
-        owner: '{{ minio_user }}'
-        force: True
-
-    - name: Create CSR
-      openssl_csr:
-        path: '/tmp/{{ minio_ssl_cert_file_name }}.csr'
-        privatekey_path: '{{ minio_key_path }}/private.key'
-        common_name: '{{ minio_ca_domain }}'
-        owner: '{{ minio_user }}'
-        force: True
-
-    - name: Create certificates for keystore
-      openssl_certificate:
-        csr_path: '/tmp/{{ minio_ssl_cert_file_name }}.csr'
-        path: '{{ minio_cert_path }}/public.crt'
-        privatekey_path: '{{ minio_key_path }}/private.key'
-        provider: '{{ minio_ssl_certificate_provider }}'
-        owner: '{{ minio_user }}'
-        force: True
-      notify:
-        - Restart Minio
-
-  when:
-    - not key_file.stat.exists
-    - not cert_file.stat.exists
-  become: True
+- name: Generate selfsigned certs
+  include_tasks: selfsigned.yml
+  when: minio_enable_ssl and not minio_local_certs

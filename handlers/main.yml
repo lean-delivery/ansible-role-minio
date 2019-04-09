@@ -10,7 +10,7 @@
 
 - name: Wait for Minio
   uri:
-    url: "{{ minio_connection_type }}://localhost:{{ minio_http_port }}/minio/login"
+    url: "{{ minio_connection_type }}://{{ minio_hostname }}:{{ minio_http_port }}/minio/login"
     status_code: 200
     headers:
       User-Agent: 'Mozilla/5.0'

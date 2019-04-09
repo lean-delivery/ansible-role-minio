@@ -51,10 +51,6 @@ Role Variables
       default: `'{{ role_path }}/files/{{ minio_ssl_key_file_name }}'`
    - `minio_local_cert_path` - Prepared certificate file path   
        default: `'{{ role_path }}/files/{{ minio_ssl_cert_file_name }}'`
-   - `minio_key_path` - Prepared private key file path   
-       default: `'{{ minio_key_default_path }}'`
-   - `minio_cert_path` - Prepared certificate file path   
-      default: `'{{ minio_cert_default_path }}'`
    - `minio_ca_domain` - Certificate domain (to create certificate if not exists)   
       default: `'{{ minio_hostname }}'`
 # https://docs.ansible.com/ansible/latest/openssl_certificate_module.html
@@ -62,9 +58,9 @@ Role Variables
       default: `selfsigned`
    - `minio_ssl_key_size` - Private key encryption size (to create certificate if not exists)   
       default: `4096`
-   - `minio_key_default_path` - The path where key should be placed   
+   - `minio_key_path` - The path where key should be placed   
       default: `'{{ minio_home }}/.minio/certs'`
-   - `minio_cert_default_path` - : The path where key should be placed'   
+   - `minio_cert_path` - : The path where key should be placed'   
       default: `{{ minio_home }}/.minio/certs'`
 
 
