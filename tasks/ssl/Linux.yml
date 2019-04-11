@@ -12,8 +12,8 @@
     mode: 0644
   become: True
   when: minio_local_certs
-  notify:
-    - Restart Minio
+#  notify:
+#    - Restart Minio
 
 - name: Copy cert file
   copy:
@@ -24,9 +24,9 @@
     mode: 0644
   become: True
   when: minio_local_certs
-  notify:
-    - Restart Minio
+#  notify:
+#    - Restart Minio
 
 - name: Generate selfsigned certs
   include_tasks: selfsigned.yml
-  when: minio_enable_ssl and not minio_local_certs
+  when: not minio_local_certs
