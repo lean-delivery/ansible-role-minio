@@ -1,7 +1,6 @@
 ---
 # tasks file for minio
 
-
 - block:
   - name: Create minio user
     user:
