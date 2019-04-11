@@ -1,8 +1,5 @@
 ---
 # tasks file for minio
-- name: Set Minio to http or https connection
-  set_fact:
-    minio_connection_type: "{{ minio_enable_ssl | ternary('https', 'http') }}"
 
 - block:
   - name: Create minio user
@@ -74,9 +71,9 @@
     enabled: True
   become: True
 
-- name: Wait for Minio
+- name: Check Minio on '{{ minio_connection_type }}'
   uri:
-    url: "{{ minio_connection_type }}://{{ minio_hostname }}:{{ minio_http_port }}/minio/login"
+    url: '{{ minio_connection_type }}://{{ minio_hostname }}:{{ minio_http_port }}/minio/login'
     status_code: 200
     headers:
       User-Agent: 'Mozilla/5.0'
