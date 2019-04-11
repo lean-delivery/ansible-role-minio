@@ -1,8 +1,4 @@
 ---
-- name: Switch to https
-  set_fact:
-    minio_connection_type: https
-
 - name: Copy key file
   copy:
     src: '{{ minio_local_key_path }}'

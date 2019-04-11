@@ -1,5 +1,8 @@
 ---
 # tasks file for minio
+- name: Set Minio to http or https connection
+  set_fact:
+    minio_connection_type: "{{ minio_enable_ssl | ternary('https', 'http') }}"
 
 - block:
   - name: Create minio user
