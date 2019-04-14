@@ -38,7 +38,7 @@ Role Variables
      default: `9000`
   - `minio_access_key` - Access key for log in   
   - `minio_secret_key` - Secret key for log in   
-   #SSL certificate settings
+  ### SSL certificate settings
    - `minio_enable_ssl` - Switching on secure connection   
       default: `True`
    - `minio_ssl_key_file_name` - Private key file name   
