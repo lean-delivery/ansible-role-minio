@@ -1,5 +1,5 @@
 ---
-# tasks file for aem-minio
+# tasks file for minio
 
 - block:
   - name: Create minio user
@@ -19,6 +19,10 @@
       - '{{ minio_home }}'
       - '{{ minio_home }}/bin'
       - '{{ minio_data_path }}'
+      - '{{ minio_home }}/.minio'
+      - '{{ minio_home }}/.minio/certs'
+      - '{{ minio_data_path }}/.minio.sys'
+      - '{{ minio_data_path }}/.minio.sys/config'
     loop_control:
       loop_var: minio_dir
 
@@ -45,26 +49,36 @@
       - src: minio.conf
         dest: '{{ minio_home }}/minio.conf'
         user: '{{ minio_user }}'
+      - src: config.json
+        dest: '{{ minio_home }}/data/.minio.sys/config/config.json'
+        user: '{{ minio_user }}'
       - src: minio.service
         dest: /etc/systemd/system/minio.service
         user: root
     loop_control:
       loop_var: conf_item
-
-  - name: Start Minio
-    service:
-      name: minio
-      state: started
-      enabled: True
-
-  - name: Copy minio config.json
-    template:
-      src: config.json.j2
-      dest: '{{ minio_home }}/data/.minio.sys/config/config.json'
-      backup: True
-      mode: 0644
-      owner: '{{ minio_user }}'
-    notify:
-    - Restart Minio
-
   become: True
+
+- name: SSL preparation
+  include_tasks: 'ssl/{{ ansible_system }}.yml'
+  when:
+    - minio_enable_ssl
+
+- name: Start Minio
+  service:
+    name: minio
+    state: started
+    enabled: True
+  become: True
+
+- name: Check Minio on '{{ minio_connection_type }}'
+  uri:
+    url: '{{ minio_connection_type }}://{{ minio_hostname }}:{{ minio_http_port }}/minio/login'
+    status_code: 200
+    headers:
+      User-Agent: 'Mozilla/5.0'
+    validate_certs: False
+  register: login_page
+  until: login_page.status == 200
+  retries: 10
+  delay: 1

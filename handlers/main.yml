@@ -1,9 +1,0 @@
----
-# handlers file for aem-minio
-
-- name: Restart Minio
-  service:
-    name: minio
-    state: restarted
-    enabled: True
-  become: True

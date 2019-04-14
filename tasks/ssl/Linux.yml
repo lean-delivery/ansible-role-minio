@@ -1,0 +1,24 @@
+---
+- name: Copy key file
+  copy:
+    src: '{{ minio_local_key_path }}'
+    dest: '{{ minio_key_path }}/private.key'
+    owner: '{{ minio_user }}'
+    group: '{{ minio_user }}'
+    mode: 0644
+  become: True
+  when: minio_local_certs
+
+- name: Copy cert file
+  copy:
+    src: '{{ minio_local_cert_path }}'
+    dest: '{{ minio_cert_path }}/public.crt'
+    owner: '{{ minio_user }}'
+    group: '{{ minio_user }}'
+    mode: 0644
+  become: True
+  when: minio_local_certs
+
+- name: Generate selfsigned certs
+  include_tasks: selfsigned.yml
+  when: not minio_local_certs
