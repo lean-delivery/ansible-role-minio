@@ -25,6 +25,7 @@
       - '{{ minio_data_path }}/.minio.sys/config'
     loop_control:
       loop_var: minio_dir
+    notify: Restart Minio
 
   - name: Copy minio binary file
     get_url:
@@ -37,6 +38,7 @@
     retries: 15
     delay: 5
     until: file_downloaded is succeeded
+    notify: Restart Minio
 
   - name: Copy minio templates
     template:
