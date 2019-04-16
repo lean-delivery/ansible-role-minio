@@ -25,6 +25,7 @@
       - '{{ minio_data_path }}/.minio.sys/config'
     loop_control:
       loop_var: minio_dir
+    notify: Restart Minio
 
   - name: Copy minio binary file
     get_url:
@@ -37,6 +38,7 @@
     retries: 15
     delay: 5
     until: file_downloaded is succeeded
+    notify: Restart Minio
 
   - name: Copy minio templates
     template:
@@ -57,12 +59,14 @@
         user: root
     loop_control:
       loop_var: conf_item
+    notify: Restart Minio
   become: True
 
 - name: SSL preparation
   include_tasks: 'ssl/{{ ansible_system }}.yml'
   when:
     - minio_enable_ssl
+  notify: Restart Minio
 
 - name: Start Minio
   service:
@@ -70,15 +74,4 @@
     state: started
     enabled: True
   become: True
-
-- name: Check Minio on '{{ minio_connection_type }}'
-  uri:
-    url: '{{ minio_connection_type }}://{{ minio_hostname }}:{{ minio_http_port }}/minio/login'
-    status_code: 200
-    headers:
-      User-Agent: 'Mozilla/5.0'
-    validate_certs: False
-  register: login_page
-  until: login_page.status == 200
-  retries: 10
-  delay: 1
+  notify: Check Minio on '{{ minio_connection_type }}'
