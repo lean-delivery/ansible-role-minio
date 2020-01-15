@@ -49,5 +49,5 @@
         privatekey_path: '{{ minio_key_path }}/private.key'
         provider: '{{ minio_ssl_certificate_provider }}'
         owner: '{{ minio_user }}'
+      notify: Restart Minio
   become: true
-  notify: Restart Minio
