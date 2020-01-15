@@ -6,7 +6,7 @@
     name: minio
     state: restarted
   notify: Check Minio on '{{ minio_connection_type }}'
-  become: True
+  become: true
 
 - name: Check Minio on '{{ minio_connection_type }}'
   uri:
@@ -14,7 +14,7 @@
     status_code: 200
     headers:
       User-Agent: 'Mozilla/5.0'
-    validate_certs: False
+    validate_certs: false
   register: login_page
   until: login_page.status == 200
   retries: 10
