@@ -1,3 +1,4 @@
+---
 - block:
   - name: Copy key file
     copy:
@@ -18,8 +19,8 @@
       mode: 0644
     become: True
     when: minio_local_certs
+  notify: Restart Minio
 
-  - name: Generate selfsigned certs
-    include_tasks: selfsigned.yml
-    when: not minio_local_certs
-notify: Restart Minio
+- name: Generate selfsigned certs
+  include_tasks: selfsigned.yml
+  when: not minio_local_certs

@@ -50,3 +50,4 @@
         provider: '{{ minio_ssl_certificate_provider }}'
         owner: '{{ minio_user }}'
   become: True
+  notify: Restart Minio
