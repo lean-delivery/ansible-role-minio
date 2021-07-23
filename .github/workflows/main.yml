@@ -1,0 +1,27 @@
+---
+name: CI
+
+on:
+  push:
+  pull_request:
+  release:
+    types:
+      - created
+
+env:
+  PY_COLORS: 1
+  ANSIBLE_FORCE_COLOR: 1
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    container: ghcr.io/pavelpikta/docker-ansible-ci:2.9
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Lints
+        run: |
+          yamllint . -c .yamllint
+          ansible-lint -c .ansible-lint

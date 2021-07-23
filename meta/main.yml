@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   role_name: minio
-  author: Lean Delivery Team <team@lean-delivery.com>
+  author: lean_delivery
   description: Lean Delivery MinIO object storage install
   company: EPAM Systems
   issue_tracker_url: https://github.com/lean-delivery/ansible-role-minio/issues
