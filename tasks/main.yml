@@ -13,6 +13,6 @@
   service:
     name: minio
     state: started
-    enabled: True
-  become: True
+    enabled: true
+  become: true
   notify: Check Minio on '{{ minio_connection_type }}'

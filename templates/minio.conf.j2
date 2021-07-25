@@ -1,3 +1,17 @@
 MINIO_VOLUMES={{ minio_data_path }}
 MINIO_ROOT_USER="{{ minio_access_key }}"
 MINIO_ROOT_PASSWORD="{{ minio_secret_key }}"
+
+# Minio cli options
+MINIO_OPTS="--console-address ":{{ minio_console_port }}""
+
+# Minio Browser
+{% if minio_browser is defined %}
+MINIO_BROWSER={{ minio_browser }}
+{% endif %}
+
+# Minio Region
+{% if minio_region_name_configure %}
+MINIO_REGION_NAME="{{ minio_region_name }}"
+MINIO_REGION_COMMENT="{{ minio_region_comment }}"
+{% endif %}

@@ -43,7 +43,7 @@
       template:
         src: "{{ conf_item.src }}.j2"
         dest: "{{ conf_item.dest }}"
-        backup: True
+        backup: true
         mode: 0644
         owner: "{{ conf_item.user }}"
       loop:
@@ -56,4 +56,4 @@
       loop_control:
         loop_var: conf_item
       notify: Restart Minio
-  become: True
+  become: true

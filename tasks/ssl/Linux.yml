@@ -6,7 +6,7 @@
     owner: "{{ minio_user }}"
     group: "{{ minio_user }}"
     mode: 0644
-  become: True
+  become: true
   when: minio_local_certs
   notify: Restart Minio
 
@@ -17,7 +17,7 @@
     owner: "{{ minio_user }}"
     group: "{{ minio_user }}"
     mode: 0644
-  become: True
+  become: true
   when: minio_local_certs
   notify: Restart Minio
 

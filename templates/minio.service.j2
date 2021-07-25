@@ -1,9 +1,9 @@
 [Unit]
-Description=Minio
-Documentation=https://docs.minio.io
+Description=MinIO
+Documentation=https://docs.min.io
 Wants=network-online.target
 After=network-online.target
-AssertFileIsExecutable="{{ minio_home }}/bin/minio"
+AssertFileIsExecutable={{ minio_home }}/bin/minio
 
 [Service]
 WorkingDirectory={{ minio_home }}
@@ -11,28 +11,23 @@ WorkingDirectory={{ minio_home }}
 User={{ minio_user }}
 Group={{ minio_group }}
 
-PermissionsStartOnly=true
-
 EnvironmentFile=-{{ minio_home }}/minio.conf
 ExecStartPre=/bin/bash -c "[ -n \"${MINIO_VOLUMES}\" ] || echo \"Variable MINIO_VOLUMES not set in {{ minio_home }}/minio.conf\""
 
-ExecStart={{ minio_home }}/bin/minio server $MINIO_VOLUMES --console-address ":{{ minio_console_port }}"
+ExecStart={{ minio_home }}/bin/minio server $MINIO_VOLUMES $MINIO_OPTS
 
-StandardOutput=journal
-StandardError=inherit
+# Let systemd restart this service always
+Restart=always
 
 # Specifies the maximum file descriptor number that can be opened by this process
 LimitNOFILE=65536
 
+# Specifies the maximum number of threads this process can create
+TasksMax=infinity
+
 # Disable timeout logic and wait until process is stopped
-TimeoutStopSec=0
-
-# SIGTERM signal is used to stop Minio
-KillSignal=SIGTERM
-
+TimeoutStopSec=infinity
 SendSIGKILL=no
-
-SuccessExitStatus=0
 
 [Install]
 WantedBy=multi-user.target
