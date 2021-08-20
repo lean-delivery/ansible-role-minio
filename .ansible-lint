@@ -1,7 +1,9 @@
+---
 exclude_paths:
- - ./.travis.yml
- - ./molecule/
-rulesdir:
-  - ~/ansible-lint-rules/rules/
-use_default_rules: true
+  - molecule/
+  - .github/
+parseable: true
+quiet: false
 verbosity: 1
+
+use_default_rules: true

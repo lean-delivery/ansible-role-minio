@@ -40,13 +40,13 @@ Role Variables
   - `minio_secret_key` - Secret key for log in   
   ### SSL certificate settings
    - `minio_enable_ssl` - Switching on secure connection   
-      default: `True`
+      default: `true`
    - `minio_ssl_key_file_name` - Private key file name   
        default: `private.key`
    - `minio_ssl_cert_file_name` - Certificate file name   
       default: `public.crt`
    -  `minio_local_certs` - To find prepared certificate files on ansible host   
-       default: `True`
+       default: `true`
    - `minio_local_key_path` - Prepared private key file path   
       default: `'{{ role_path }}/files/{{ minio_ssl_key_file_name }}'`
    - `minio_local_cert_path` - Prepared certificate file path   

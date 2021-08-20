@@ -1,6 +1,10 @@
 ---
 extends: default
 
+ignore: |
+  molecule/
+  .github/
+
 rules:
   braces:
     max-spaces-inside: 1

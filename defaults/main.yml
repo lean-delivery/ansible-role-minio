@@ -4,22 +4,32 @@ minio_home: /opt/minio
 minio_user: minio
 minio_group: minio
 minio_package_source: https://dl.minio.io/server/minio/release/linux-amd64/minio
-minio_data_path: '{{ minio_home }}/data'
-minio_hostname: '{{ ansible_fqdn }}'
-minio_http_port: 9000
-minio_access_key: EH3FJ946FA17VFAPAQVB
-minio_secret_key: WiiS0bcJf+jxqgPJkDJT2tGvFbpyCS9E+FipKwO7
+minio_data_path: "{{ minio_home }}/data"
+minio_hostname: "{{ ansible_fqdn }}"
 
 #SSL certificate
-minio_enable_ssl: True
+minio_enable_ssl: true
 minio_ssl_key_file_name: private.key
 minio_ssl_cert_file_name: public.crt
-minio_local_certs: False
-minio_local_key_path: '{{ role_path }}/files/{{ minio_ssl_key_file_name }}'
-minio_local_cert_path: '{{ role_path }}/files/{{ minio_ssl_cert_file_name }}'
-minio_key_path: '{{ minio_home }}/.minio/certs'
-minio_cert_path: '{{ minio_home }}/.minio/certs'
-minio_ca_domain: '{{ minio_hostname }}'
+minio_local_certs: false
+minio_local_key_path: "{{ role_path }}/files/{{ minio_ssl_key_file_name }}"
+minio_local_cert_path: "{{ role_path }}/files/{{ minio_ssl_cert_file_name }}"
+minio_key_path: "{{ minio_home }}/.minio/certs"
+minio_cert_path: "{{ minio_home }}/.minio/certs"
+minio_ca_domain: "{{ minio_hostname }}"
 # https://docs.ansible.com/ansible/latest/openssl_certificate_module.html
 minio_ssl_certificate_provider: selfsigned
 minio_ssl_key_size: 4096
+
+# default variables for Minio server configuration
+minio_http_port: 9000
+minio_console_port: 9001
+minio_access_key: minio
+minio_secret_key: minio123
+
+# Additional configuration
+minio_browser: true
+# Region
+minio_region_name_configure: false
+minio_region_name: "us-west-rack2"
+minio_region_comment: ""
